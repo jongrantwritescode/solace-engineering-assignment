@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { SearchBar } from '../SearchBar';
 
 describe('SearchBar', () => {
-  it('renders search input and handles basic input', async () => {
+  it('passes raw input and renders it safely', async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
     const handleReset = jest.fn();
@@ -13,16 +13,15 @@ describe('SearchBar', () => {
     );
 
     const input = screen.getByPlaceholderText(/search by name/i);
-    await user.type(input, 'John');
+    const malicious = '<script>alert("xss")</script>';
+    await user.type(input, malicious);
 
-    // Check that the input change was called
-    expect(handleChange).toHaveBeenCalled();
+    expect(handleChange).toHaveBeenLastCalledWith(malicious);
 
-    // simulate parent updating searchTerm
     rerender(
-      <SearchBar searchTerm="John" onSearchChange={handleChange} onReset={handleReset} />
+      <SearchBar searchTerm={malicious} onSearchChange={handleChange} onReset={handleReset} />
     );
-    expect(screen.getByText(/Searching for:/)).toHaveTextContent('John');
+    expect(screen.getByText(/Searching for:/)).toHaveTextContent(malicious);
 
     await user.click(screen.getByText(/Reset Search/i));
     expect(handleReset).toHaveBeenCalled();
