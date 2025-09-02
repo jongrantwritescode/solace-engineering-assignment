@@ -9,6 +9,7 @@ export function useDebouncedSearch(debounceMs: number = 300) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const initialLoadRef = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Debounce the search term
   useEffect(() => {
@@ -21,7 +22,12 @@ export function useDebouncedSearch(debounceMs: number = 300) {
 
   // Fetch data when debounced search term changes
   const fetchData = useCallback(async (search: string, page: number = 1) => {
-    console.log('Fetching data:', { search, page });
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Fetching data:', { search, page });
+    }
     setLoading(true);
     setError(null);
     
@@ -32,21 +38,31 @@ export function useDebouncedSearch(debounceMs: number = 300) {
         limit: '20'
       });
       
-      const response = await fetch(`/api/advocates?${params}`);
+      const response = await fetch(`/api/advocates?${params}`, {
+        signal: controller.signal
+      });
       
       if (!response.ok) {
         throw new Error('Failed to fetch advocates');
       }
       
       const result: SearchResponse = await response.json();
-      console.log('Received data:', result);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Received data:', result);
+      }
       setData(result.data);
       setPagination(result.pagination);
     } catch (err) {
-      console.error('Error fetching data:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      setData([]);
-      setPagination(null);
+      if ((err as any).name === 'AbortError') {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Request aborted');
+        }
+      } else {
+        console.error('Error fetching data:', err);
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        setData([]);
+        setPagination(null);
+      }
     } finally {
       setLoading(false);
     }
@@ -55,7 +71,9 @@ export function useDebouncedSearch(debounceMs: number = 300) {
   // Initial data fetch on component mount
   useEffect(() => {
     if (!initialLoadRef.current) {
-      console.log('Initial data fetch');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Initial data fetch');
+      }
       fetchData('');
       initialLoadRef.current = true;
     }
@@ -63,7 +81,9 @@ export function useDebouncedSearch(debounceMs: number = 300) {
 
   useEffect(() => {
     if (initialLoadRef.current) {
-      console.log('Search term changed:', debouncedSearchTerm);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Search term changed:', debouncedSearchTerm);
+      }
       fetchData(debouncedSearchTerm);
     }
   }, [debouncedSearchTerm, fetchData]);

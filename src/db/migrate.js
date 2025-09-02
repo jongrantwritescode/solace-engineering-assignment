@@ -8,7 +8,9 @@ const runMigration = async () => {
   // Log only non-sensitive connection details for debugging purposes
   try {
     const { host } = new URL(process.env.DATABASE_URL);
-    console.log(`Running migration against host: ${host}`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Running migration against host: ${host}`);
+    }
   } catch {
     // Swallow errors parsing the URL to avoid exposing secrets
   }
@@ -21,8 +23,9 @@ const runMigration = async () => {
 
 runMigration()
   .then(() => {
-    console.log("Successfully ran migration.");
-
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Successfully ran migration.");
+    }
     process.exit(0);
   })
   .catch((e) => {
