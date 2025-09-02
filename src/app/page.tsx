@@ -9,7 +9,7 @@ type Advocate = {
   degree: string;
   specialties: string[];
   yearsOfExperience: number;
-  phoneNumber: number;
+  phoneNumber: string; // Changed from number to string
 };
 
 export default function Home() {
@@ -18,18 +18,21 @@ export default function Home() {
   const searchTermRef = useRef<HTMLSpanElement>(null);
 
   // Helper function to format phone number to US format
-  const formatPhoneNumber = (phoneNumber: number): string => {
-    const phoneString = phoneNumber.toString();
-    if (phoneString.length === 10) {
-      return `(${phoneString.slice(0, 3)}) ${phoneString.slice(3, 6)}-${phoneString.slice(6)}`;
+  const formatPhoneNumber = (phoneNumber: string): string => {
+    // Remove any non-digit characters
+    const cleanNumber = phoneNumber.replace(/\D/g, '');
+    
+    if (cleanNumber.length === 10) {
+      return `(${cleanNumber.slice(0, 3)}) ${cleanNumber.slice(3, 6)}-${cleanNumber.slice(6)}`;
     }
-    return phoneString; // Return as-is if not 10 digits
+    return phoneNumber; // Return as-is if not 10 digits
   };
 
   // Helper function to handle phone number click
-  const handlePhoneClick = (phoneNumber: number) => {
-    const formattedNumber = phoneNumber.toString();
-    window.location.href = `tel:${formattedNumber}`;
+  const handlePhoneClick = (phoneNumber: string) => {
+    // Remove any non-digit characters for tel: link
+    const cleanNumber = phoneNumber.replace(/\D/g, '');
+    window.location.href = `tel:${cleanNumber}`;
   };
 
   useEffect(() => {
@@ -53,7 +56,7 @@ export default function Home() {
     const filteredAdvocates = advocates.filter((advocate: Advocate) => {
       // Strip formatting characters from search term for phone number matching
       const cleanSearchTerm = searchTerm.replace(/[()\-\s]/g, '');
-      const cleanPhoneNumber = advocate.phoneNumber.toString();
+      const cleanPhoneNumber = advocate.phoneNumber.replace(/\D/g, '');
       
       return (
         advocate.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
