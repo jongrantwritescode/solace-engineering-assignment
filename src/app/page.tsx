@@ -44,27 +44,31 @@ export default function Home() {
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
+    const term = searchTerm.toLowerCase();
 
     if (searchTermRef.current) {
       searchTermRef.current.innerHTML = searchTerm;
     }
 
     console.log("filtering advocates...");
+    const cleanTerm = searchTerm.replace(/[()\-\s]/g, '');
     const filteredAdvocates = advocates.filter((advocate: Advocate) => {
-      // Strip formatting characters from search term for phone number matching
-      const cleanSearchTerm = searchTerm.replace(/[()\-\s]/g, '');
-      const cleanPhoneNumber = advocate.phoneNumber.toString();
-      
+      const first = advocate.firstName.toLowerCase();
+      const last = advocate.lastName.toLowerCase();
+      const city = advocate.city.toLowerCase();
+      const degree = advocate.degree.toLowerCase();
+      const specs = advocate.specialties.map((specialty) => specialty.toLowerCase());
+      const experience = advocate.yearsOfExperience.toString();
+      const phone = advocate.phoneNumber.toString();
+
       return (
-        advocate.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        advocate.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        advocate.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        advocate.degree.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        advocate.specialties.some(specialty => 
-          specialty.toLowerCase().includes(searchTerm.toLowerCase())
-        ) ||
-        advocate.yearsOfExperience.toString().includes(searchTerm) ||
-        cleanPhoneNumber.includes(cleanSearchTerm)
+        first.includes(term) ||
+        last.includes(term) ||
+        city.includes(term) ||
+        degree.includes(term) ||
+        specs.some((spec) => spec.includes(term)) ||
+        experience.includes(term) ||
+        phone.includes(cleanTerm)
       );
     });
 
