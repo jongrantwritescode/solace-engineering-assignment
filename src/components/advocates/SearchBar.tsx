@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 interface SearchBarProps {
   searchTerm: string;
@@ -19,6 +19,13 @@ const sanitizeInput = (input: string): string => {
 
 export function SearchBar({ searchTerm, onSearchChange, onReset }: SearchBarProps) {
   const searchTermRef = useRef<HTMLSpanElement>(null);
+
+  // Update the span content when searchTerm changes
+  useEffect(() => {
+    if (searchTermRef.current) {
+      searchTermRef.current.textContent = searchTerm;
+    }
+  }, [searchTerm]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
