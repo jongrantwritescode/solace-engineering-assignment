@@ -5,9 +5,13 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search') || '';
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    
+    let page = Number(searchParams.get('page'));
+    let limit = Number(searchParams.get('limit'));
+
+    if (Number.isNaN(page) || page < 1) page = 1;
+    if (Number.isNaN(limit) || limit < 1) limit = 20;
+    limit = Math.min(limit, 100);
+
     const offset = (page - 1) * limit;
     
     // Check if database is properly connected
