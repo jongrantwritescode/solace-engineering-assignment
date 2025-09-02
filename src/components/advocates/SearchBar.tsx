@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import type { ChangeEvent } from 'react';
 
 interface SearchBarProps {
   searchTerm: string;
@@ -6,42 +6,13 @@ interface SearchBarProps {
   onReset: () => void;
 }
 
-// Sanitize input to prevent XSS and ensure safe text
-const sanitizeInput = (input: string): string => {
-  return input
-    .trim()
-    .replace(/[<>]/g, '') // Remove potential HTML tags
-    .replace(/[&]/g, '&amp;') // Encode ampersands
-    .replace(/["]/g, '&quot;') // Encode quotes
-    .replace(/[']/g, '&#x27;') // Encode single quotes
-    .slice(0, 100); // Limit length to prevent abuse
-};
-
 export function SearchBar({ searchTerm, onSearchChange, onReset }: SearchBarProps) {
-  const searchTermRef = useRef<HTMLSpanElement>(null);
-
-  // Update the span content when searchTerm changes
-  useEffect(() => {
-    if (searchTermRef.current) {
-      searchTermRef.current.textContent = searchTerm;
-    }
-  }, [searchTerm]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const sanitizedValue = sanitizeInput(value);
-    onSearchChange(sanitizedValue);
-
-    if (searchTermRef.current) {
-      searchTermRef.current.textContent = sanitizedValue; // Use textContent instead of innerHTML
-    }
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    onSearchChange(e.target.value);
   };
 
   const handleReset = () => {
     onReset();
-    if (searchTermRef.current) {
-      searchTermRef.current.textContent = '';
-    }
   };
 
   return (
@@ -65,12 +36,13 @@ export function SearchBar({ searchTerm, onSearchChange, onReset }: SearchBarProp
           Reset Search
         </button>
       </div>
-      
+
       {searchTerm && (
         <div className="mt-4 text-sm text-gray-600">
-          Searching for: <span className="font-medium text-green-700" ref={searchTermRef}></span>
+          Searching for: <span className="font-medium text-green-700">{searchTerm}</span>
         </div>
       )}
     </div>
   );
 }
+
