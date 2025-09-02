@@ -15,59 +15,11 @@ export default function Home() {
     handleSearchChange,
     resetSearch
   } = useDebouncedSearch(300);
-  
-  const handlePhoneClick = (phoneNumber: number) => {
-    const formattedNumber = phoneNumber.toString();
-    window.location.href = `tel:${formattedNumber}`;
-  };
 
-  useEffect(() => {
-    console.log("fetching advocates...");
-    fetch("/api/advocates").then((response) => {
-      response.json().then((jsonResponse) => {
-        setAdvocates(jsonResponse.data);
-        setFilteredAdvocates(jsonResponse.data);
-      });
-    });
-  }, []);
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value;
-    const term = searchTerm.toLowerCase();
-
-    if (searchTermRef.current) {
-      searchTermRef.current.innerHTML = searchTerm;
-    }
-
-    console.log("filtering advocates...");
-    const cleanTerm = searchTerm.replace(/[()\-\s]/g, '');
-    const filteredAdvocates = advocates.filter((advocate: Advocate) => {
-      const first = advocate.firstName.toLowerCase();
-      const last = advocate.lastName.toLowerCase();
-      const city = advocate.city.toLowerCase();
-      const degree = advocate.degree.toLowerCase();
-      const specs = advocate.specialties.map((specialty) => specialty.toLowerCase());
-      const experience = advocate.yearsOfExperience.toString();
-      const phone = advocate.phoneNumber.toString();
-
-      return (
-        first.includes(term) ||
-        last.includes(term) ||
-        city.includes(term) ||
-        degree.includes(term) ||
-        specs.some((spec) => spec.includes(term)) ||
-        experience.includes(term) ||
-        phone.includes(cleanTerm)
-      );
-    });
-
-    setFilteredAdvocates(filteredAdvocates);
-  };
-
-  const onClick = () => {
-    console.log(advocates);
-    setFilteredAdvocates(advocates);
-
+  // Helper function to handle phone number click
+  const handlePhoneClick = (phoneNumber: string) => {
+    const cleanNumber = cleanPhoneNumber(phoneNumber);
+    window.location.href = `tel:${cleanNumber}`;
   };
 
   return (
