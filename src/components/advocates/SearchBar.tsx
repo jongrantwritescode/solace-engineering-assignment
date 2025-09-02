@@ -6,22 +6,34 @@ interface SearchBarProps {
   onReset: () => void;
 }
 
+// Sanitize input to prevent XSS and ensure safe text
+const sanitizeInput = (input: string): string => {
+  return input
+    .trim()
+    .replace(/[<>]/g, '') // Remove potential HTML tags
+    .replace(/[&]/g, '&amp;') // Encode ampersands
+    .replace(/["]/g, '&quot;') // Encode quotes
+    .replace(/[']/g, '&#x27;') // Encode single quotes
+    .slice(0, 100); // Limit length to prevent abuse
+};
+
 export function SearchBar({ searchTerm, onSearchChange, onReset }: SearchBarProps) {
   const searchTermRef = useRef<HTMLSpanElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    onSearchChange(value);
+    const sanitizedValue = sanitizeInput(value);
+    onSearchChange(sanitizedValue);
 
     if (searchTermRef.current) {
-      searchTermRef.current.innerHTML = value;
+      searchTermRef.current.textContent = sanitizedValue; // Use textContent instead of innerHTML
     }
   };
 
   const handleReset = () => {
     onReset();
     if (searchTermRef.current) {
-      searchTermRef.current.innerHTML = '';
+      searchTermRef.current.textContent = '';
     }
   };
 
@@ -36,6 +48,7 @@ export function SearchBar({ searchTerm, onSearchChange, onReset }: SearchBarProp
           placeholder="Search by name, city, specialty, or experience..."
           value={searchTerm}
           onChange={handleChange}
+          maxLength={100}
           className="flex-1 px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
         />
         <button
