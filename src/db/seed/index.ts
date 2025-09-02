@@ -4,17 +4,25 @@ import { advocateData } from "./advocates";
 
 const seed = async () => {
   try {
-    console.log("Starting database seeding...");
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Starting database seeding...");
+    }
     
     // Clear existing data
     await db.delete(advocates);
-    console.log("Cleared existing advocates data");
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Cleared existing advocates data");
+    }
     
     // Insert new data
     const result = await db.insert(advocates).values(advocateData);
-    console.log(`Successfully seeded ${advocateData.length} advocates`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Successfully seeded ${advocateData.length} advocates`);
+    }
     
-    console.log("Database seeding completed successfully!");
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Database seeding completed successfully!");
+    }
   } catch (error) {
     console.error("Error seeding database:", error);
     throw error;
@@ -23,7 +31,9 @@ const seed = async () => {
 
 seed()
   .then(() => {
-    console.log("Seeding completed successfully");
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Seeding completed successfully");
+    }
     process.exit(0);
   })
   .catch((error) => {
