@@ -36,6 +36,10 @@ npx drizzle-kit push
 
 4. Seed the database
 
+The seeding endpoint is only available in development. Set a `SEED_TOKEN`
+environment variable and include it in the request via the `x-seed-token`
+header:
+
 ```bash
-curl -X POST http://localhost:3000/api/seed
+curl -H "x-seed-token: $SEED_TOKEN" -X POST http://localhost:3000/api/seed
 ```
