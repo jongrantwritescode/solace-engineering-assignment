@@ -51,10 +51,6 @@ Break the table into smaller, reusable pieces.
 Move all text into JSON and serve via **i18next** for full localization support.  
 
 ## Codex Suggestions to Revisit
-- **Search term sanitization + manual DOM updates**  
-  - Using `sanitizeInput` + refs to set `textContent` turns characters like `&` into entities (`&amp;`)  
-  - This bypasses React’s normal rendering → could break searches & complicate maintenance  
-
 - **Debounced search hook + unmounting**  
   - `useDebouncedSearch` leaves in-flight requests alive if the component unmounts  
   - May cause **state updates on unmounted components** → potential bugs  
