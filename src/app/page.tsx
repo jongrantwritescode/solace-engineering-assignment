@@ -67,18 +67,16 @@ export default function Home() {
           </h2>
           
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Search Advocates
+            </label>
             <div className="flex flex-col md:flex-row gap-4 items-center">
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Search Advocates
-                </label>
-                <input
-                  type="text"
-                  placeholder="Search by name, city, specialty, or experience..."
-                  onChange={onChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="Search by name, city, specialty, or experience..."
+                onChange={onChange}
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+              />
               <button
                 onClick={onClick}
                 className="px-6 py-3 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors font-medium"
