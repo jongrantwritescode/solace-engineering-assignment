@@ -17,6 +17,21 @@ export default function Home() {
   const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
   const searchTermRef = useRef<HTMLSpanElement>(null);
 
+  // Helper function to format phone number to US format
+  const formatPhoneNumber = (phoneNumber: number): string => {
+    const phoneString = phoneNumber.toString();
+    if (phoneString.length === 10) {
+      return `(${phoneString.slice(0, 3)}) ${phoneString.slice(3, 6)}-${phoneString.slice(6)}`;
+    }
+    return phoneString; // Return as-is if not 10 digits
+  };
+
+  // Helper function to handle phone number click
+  const handlePhoneClick = (phoneNumber: number) => {
+    const formattedNumber = phoneNumber.toString();
+    window.location.href = `tel:${formattedNumber}`;
+  };
+
   useEffect(() => {
     console.log("fetching advocates...");
     fetch("/api/advocates").then((response) => {
@@ -36,13 +51,20 @@ export default function Home() {
 
     console.log("filtering advocates...");
     const filteredAdvocates = advocates.filter((advocate: Advocate) => {
+      // Strip formatting characters from search term for phone number matching
+      const cleanSearchTerm = searchTerm.replace(/[()\-\s]/g, '');
+      const cleanPhoneNumber = advocate.phoneNumber.toString();
+      
       return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.toString().includes(searchTerm)
+        advocate.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        advocate.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        advocate.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        advocate.degree.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        advocate.specialties.some(specialty => 
+          specialty.toLowerCase().includes(searchTerm.toLowerCase())
+        ) ||
+        advocate.yearsOfExperience.toString().includes(searchTerm) ||
+        cleanPhoneNumber.includes(cleanSearchTerm)
       );
     });
 
@@ -98,25 +120,25 @@ export default function Home() {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">City</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Degree</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Specialties</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Experience</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Contact</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 w-1/6">Name</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 w-1/6">City</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 w-1/12">Degree</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 w-1/3">Specialties</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 w-1/12">Experience</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 w-1/4">Contact</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {filteredAdvocates.map((advocate, index) => (
                     <tr key={index} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 align-top">
+                      <td className="px-6 py-4 align-top w-1/6">
                         <div className="font-medium text-gray-900">
                           {advocate.firstName} {advocate.lastName}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-gray-700 align-top">{advocate.city}</td>
-                      <td className="px-6 py-4 text-gray-700 align-top">{advocate.degree}</td>
-                      <td className="px-6 py-4 align-top">
+                      <td className="px-6 py-4 text-gray-700 align-top w-1/6">{advocate.city}</td>
+                      <td className="px-6 py-4 text-gray-700 align-top w-1/12">{advocate.degree}</td>
+                      <td className="px-6 py-4 align-top w-1/3">
                         <div className="flex flex-wrap gap-1">
                           {advocate.specialties.map((specialty, i) => (
                             <span
@@ -128,12 +150,16 @@ export default function Home() {
                           ))}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-gray-700 align-top">
+                      <td className="px-6 py-4 text-gray-700 align-top w-1/12">
                         {advocate.yearsOfExperience} years
                       </td>
-                      <td className="px-6 py-4 align-top">
-                        <button className="text-green-700 hover:text-green-800 font-medium">
-                          {advocate.phoneNumber}
+                      <td className="px-6 py-4 align-top w-1/4">
+                        <button 
+                          onClick={() => handlePhoneClick(advocate.phoneNumber)}
+                          className="text-green-700 hover:text-green-800 font-medium hover:underline transition-colors"
+                          title="Click to call"
+                        >
+                          {formatPhoneNumber(advocate.phoneNumber)}
                         </button>
                       </td>
                     </tr>
