@@ -1,3 +1,4 @@
+require('dotenv').config();
 const db = require("..");
 const { advocates } = require("../schema");
 const { advocateData } = require("./advocates");
