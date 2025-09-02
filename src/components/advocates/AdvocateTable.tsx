@@ -1,12 +1,11 @@
 import { Advocate } from "../../types/advocate.types";
-import { formatPhoneNumber } from "../../lib/utils";
+import { formatPhoneNumber, cleanPhoneNumber } from "../../lib/utils";
 
 interface AdvocateTableProps {
   advocates: Advocate[];
-  onPhoneClick: (phoneNumber: string) => void;
 }
 
-export function AdvocateTable({ advocates, onPhoneClick }: AdvocateTableProps) {
+export function AdvocateTable({ advocates }: AdvocateTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full">
@@ -46,13 +45,12 @@ export function AdvocateTable({ advocates, onPhoneClick }: AdvocateTableProps) {
                 {advocate.yearsOfExperience} years
               </td>
               <td className="px-6 py-4 align-top w-1/4">
-                <button 
-                  onClick={() => onPhoneClick(advocate.phoneNumber)}
+                <a
+                  href={`tel:${cleanPhoneNumber(advocate.phoneNumber)}`}
                   className="text-green-700 hover:text-green-800 font-medium hover:underline transition-colors"
-                  title="Click to call"
                 >
                   {formatPhoneNumber(advocate.phoneNumber)}
-                </button>
+                </a>
               </td>
             </tr>
           ))}

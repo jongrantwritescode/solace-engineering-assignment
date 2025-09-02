@@ -9,15 +9,13 @@ interface AdvocateResultsProps {
   pagination: PaginationInfoType | null;
   loading: boolean;
   error: string | null;
-  onPhoneClick: (phoneNumber: string) => void;
 }
 
-export function AdvocateResults({ 
-  advocates, 
-  pagination, 
-  loading, 
-  error, 
-  onPhoneClick 
+export function AdvocateResults({
+  advocates,
+  pagination,
+  loading,
+  error
 }: AdvocateResultsProps) {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -31,7 +29,7 @@ export function AdvocateResults({
         <LoadingSpinner />
       ) : (
         <>
-          <AdvocateTable advocates={advocates} onPhoneClick={onPhoneClick} />
+          <AdvocateTable advocates={advocates} />
           
           {advocates.length === 0 && !loading && (
             <div className="px-6 py-12 text-center text-gray-500">
