@@ -10,7 +10,8 @@
     "lint": "next lint",
     "generate": "drizzle-kit generate",
     "migrate:up": "node ./src/db/migrate.js",
-    "seed": "tsx ./src/db/seed/index.ts"
+    "seed": "tsx ./src/db/seed/index.ts",
+    "test": "jest"
   },
   "dependencies": {
     "dotenv": "^17.2.2",
@@ -30,6 +31,12 @@
     "postcss": "^8.4.40",
     "tailwindcss": "^3.4.7",
     "tsx": "^4.19.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.12",
+    "@testing-library/react": "^14.2.1",
+    "@testing-library/jest-dom": "^6.4.3",
+    "@testing-library/user-event": "^14.5.4",
+    "jest-environment-jsdom": "^29.7.0"
   }
 }
