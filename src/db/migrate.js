@@ -5,8 +5,13 @@ const postgres = require("postgres");
 
 const runMigration = async () => {
   if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is not set");
-
-  console.log(process.env.DATABASE_URL);
+  // Log only non-sensitive connection details for debugging purposes
+  try {
+    const { host } = new URL(process.env.DATABASE_URL);
+    console.log(`Running migration against host: ${host}`);
+  } catch {
+    // Swallow errors parsing the URL to avoid exposing secrets
+  }
 
   const sql = postgres(process.env.DATABASE_URL, { max: 1 });
   const db = drizzle(sql);
