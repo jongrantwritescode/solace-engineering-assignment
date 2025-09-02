@@ -32,9 +32,9 @@ export function AdvocateTable({ advocates, onPhoneClick }: AdvocateTableProps) {
               <td className="px-6 py-4 text-gray-700 align-top w-1/12">{advocate.degree}</td>
               <td className="px-6 py-4 align-top w-1/3">
                 <div className="flex flex-wrap gap-1">
-                  {advocate.specialties.map((specialty, i) => (
+                  {advocate.specialties.map((specialty) => (
                     <span
-                      key={i}
+                      key={specialty}
                       className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
                     >
                       {specialty}
