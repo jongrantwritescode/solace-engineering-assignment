@@ -3,7 +3,6 @@
 import { useDebouncedSearch } from "../hooks/useDebouncedSearch";
 import { SearchBar, AdvocateResults } from "../components/advocates";
 import { Banner } from "../components/ui";
-import { cleanPhoneNumber } from "../lib/utils";
 
 export default function Home() {
   const {
@@ -15,12 +14,6 @@ export default function Home() {
     handleSearchChange,
     resetSearch
   } = useDebouncedSearch(300);
-
-  // Helper function to handle phone number click
-  const handlePhoneClick = (phoneNumber: string) => {
-    const cleanNumber = cleanPhoneNumber(phoneNumber);
-    window.location.href = `tel:${cleanNumber}`;
-  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -42,12 +35,11 @@ export default function Home() {
             onReset={resetSearch}
           />
 
-          <AdvocateResults 
+          <AdvocateResults
             advocates={advocates}
             pagination={pagination}
             loading={loading}
             error={error}
-            onPhoneClick={handlePhoneClick}
           />
         </div>
       </section>
