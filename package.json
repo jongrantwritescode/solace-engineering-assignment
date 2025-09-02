@@ -2,6 +2,7 @@
   "name": "solace-candidate-assignment",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,7 +10,7 @@
     "lint": "next lint",
     "generate": "drizzle-kit generate",
     "migrate:up": "node ./src/db/migrate.js",
-    "seed": "node ./src/db/seed/index.js"
+    "seed": "tsx ./src/db/seed/index.ts"
   },
   "dependencies": {
     "dotenv": "^17.2.2",
@@ -28,6 +29,7 @@
     "eslint-config-next": "14.2.5",
     "postcss": "^8.4.40",
     "tailwindcss": "^3.4.7",
+    "tsx": "^4.19.2",
     "typescript": "^5.5.4"
   }
 }

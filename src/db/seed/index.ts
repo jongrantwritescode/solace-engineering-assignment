@@ -1,7 +1,6 @@
-require('dotenv').config();
-const db = require("..");
-const { advocates } = require("../schema");
-const { advocateData } = require("./advocates");
+import db from "..";
+import { advocates } from "../schema";
+import { advocateData } from "./advocates";
 
 const seed = async () => {
   try {

@@ -34,7 +34,7 @@ const randomSpecialty = () => {
   return [random1, random2];
 };
 
-const advocateData = [
+export const advocateData = [
   {
     firstName: "John",
     lastName: "Doe",
@@ -171,5 +171,3 @@ const advocateData = [
     phoneNumber: "5559872345",
   },
 ];
-
-module.exports = { advocateData };
