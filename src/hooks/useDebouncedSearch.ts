@@ -4,7 +4,6 @@ import {
   PaginationInfo,
   SearchResponse,
 } from "../types/advocate.types";
-import { highlightText } from "../utils/highlightText";
 
 export function useDebouncedSearch(debounceMs: number = 300) {
   const [searchTerm, setSearchTerm] = useState("");

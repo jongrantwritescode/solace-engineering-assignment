@@ -6,6 +6,7 @@ import { PaginationInfo } from "./PaginationInfo";
 
 interface AdvocateResultsProps {
   advocates: Advocate[];
+  search: string;
   pagination: PaginationInfoType | null;
   loading: boolean;
   error: string | null;
@@ -13,9 +14,10 @@ interface AdvocateResultsProps {
 
 export function AdvocateResults({
   advocates,
+  search,
   pagination,
   loading,
-  error
+  error,
 }: AdvocateResultsProps) {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -24,22 +26,20 @@ export function AdvocateResults({
           <p>Error: {error}</p>
         </div>
       )}
-      
+
       {loading ? (
         <LoadingSpinner />
       ) : (
         <>
-          <AdvocateTable advocates={advocates} />
-          
+          <AdvocateTable advocates={advocates} search={search} />
+
           {advocates.length === 0 && !loading && (
             <div className="px-6 py-12 text-center text-gray-500">
               <p>No advocates found matching your search criteria.</p>
             </div>
           )}
 
-          {pagination && (
-            <PaginationInfo pagination={pagination} />
-          )}
+          {pagination && <PaginationInfo pagination={pagination} />}
         </>
       )}
     </div>
