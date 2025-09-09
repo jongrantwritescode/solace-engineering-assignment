@@ -1,9 +1,13 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { Advocate, PaginationInfo, SearchResponse } from '../types/advocate.types';
+import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  Advocate,
+  PaginationInfo,
+  SearchResponse,
+} from "../types/advocate.types";
 
 export function useDebouncedSearch(debounceMs: number = 300) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [data, setData] = useState<Advocate[]>([]);
   const [pagination, setPagination] = useState<PaginationInfo | null>(null);
   const [loading, setLoading] = useState(false);
@@ -25,41 +29,42 @@ export function useDebouncedSearch(debounceMs: number = 300) {
     abortControllerRef.current?.abort();
     const controller = new AbortController();
     abortControllerRef.current = controller;
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Fetching data:', { search, page });
+    if (process.env.NODE_ENV === "development") {
+      console.log("Fetching data:", { search, page });
     }
     setLoading(true);
     setError(null);
-    
+
     try {
       const params = new URLSearchParams({
         search: search,
         page: page.toString(),
-        limit: '20'
+        limit: "20",
       });
-      
+
       const response = await fetch(`/api/advocates?${params}`, {
-        signal: controller.signal
+        signal: controller.signal,
       });
-      
+
       if (!response.ok) {
-        throw new Error('Failed to fetch advocates');
+        throw new Error("Failed to fetch advocates");
       }
-      
+
       const result: SearchResponse = await response.json();
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Received data:', result);
+      if (process.env.NODE_ENV === "development") {
+        console.log("Received data:", result);
       }
+
       setData(result.data);
       setPagination(result.pagination);
     } catch (err) {
-      if ((err as any).name === 'AbortError') {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('Request aborted');
+      if ((err as any).name === "AbortError") {
+        if (process.env.NODE_ENV === "development") {
+          console.log("Request aborted");
         }
       } else {
-        console.error('Error fetching data:', err);
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        console.error("Error fetching data:", err);
+        setError(err instanceof Error ? err.message : "An error occurred");
         setData([]);
         setPagination(null);
       }
@@ -71,18 +76,18 @@ export function useDebouncedSearch(debounceMs: number = 300) {
   // Initial data fetch on component mount
   useEffect(() => {
     if (!initialLoadRef.current) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Initial data fetch');
+      if (process.env.NODE_ENV === "development") {
+        console.log("Initial data fetch");
       }
-      fetchData('');
+      fetchData("");
       initialLoadRef.current = true;
     }
   }, [fetchData]);
 
   useEffect(() => {
     if (initialLoadRef.current) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Search term changed:', debouncedSearchTerm);
+      if (process.env.NODE_ENV === "development") {
+        console.log("Search term changed:", debouncedSearchTerm);
       }
       fetchData(debouncedSearchTerm);
     }
@@ -97,8 +102,8 @@ export function useDebouncedSearch(debounceMs: number = 300) {
   };
 
   const resetSearch = () => {
-    setSearchTerm('');
-    setDebouncedSearchTerm('');
+    setSearchTerm("");
+    setDebouncedSearchTerm("");
   };
 
   return {
@@ -109,6 +114,6 @@ export function useDebouncedSearch(debounceMs: number = 300) {
     error,
     handleSearchChange,
     handlePageChange,
-    resetSearch
+    resetSearch,
   };
 }

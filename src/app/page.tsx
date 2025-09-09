@@ -12,15 +12,13 @@ export default function Home() {
     loading,
     error,
     handleSearchChange,
-    resetSearch
+    resetSearch,
   } = useDebouncedSearch(300);
 
   return (
     <div className="min-h-screen bg-white">
       {/* Top Banner */}
-      <Banner>
-        Healthcare Advocate Directory
-      </Banner>
+      <Banner>Healthcare Advocate Directory</Banner>
 
       {/* Search Section */}
       <section className="bg-gray-50 py-12 px-6">
@@ -28,8 +26,8 @@ export default function Home() {
           <h2 className="text-3xl font-serif text-gray-900 mb-8 text-center">
             Find Your Healthcare Advocate
           </h2>
-          
-          <SearchBar 
+
+          <SearchBar
             searchTerm={searchTerm}
             onSearchChange={handleSearchChange}
             onReset={resetSearch}
@@ -37,6 +35,7 @@ export default function Home() {
 
           <AdvocateResults
             advocates={advocates}
+            search={searchTerm}
             pagination={pagination}
             loading={loading}
             error={error}
